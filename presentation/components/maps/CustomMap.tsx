@@ -1,6 +1,6 @@
 import { LatLng } from '@/infrastructure/interfaces/lat-lng';
 import { useLocationStore } from '@/presentation/store/useLocationStore';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import FAB from '../shared/FAB';
@@ -12,9 +12,10 @@ interface Props extends ViewProps {
 
 const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props) => {
 
-    const mapRef = useRef<MapView>(null)
+    const mapRef = useRef<MapView>(null);
+    const [isFollowingUser, setIsFollowingUser] = useState(true);
 
-    const { watchLocation, clearWatchLocation, lastKnownLocation } = useLocationStore()
+    const { watchLocation, clearWatchLocation, lastKnownLocation, getLocation } = useLocationStore()
 
     useEffect(() => {
         watchLocation();
@@ -27,9 +28,11 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
     useEffect(() => {
         if (!lastKnownLocation) return;
 
-        moveCameraToLocation(lastKnownLocation)
+        if (isFollowingUser) {
+            moveCameraToLocation(lastKnownLocation)
+        }
 
-    }, [lastKnownLocation])
+    }, [lastKnownLocation, isFollowingUser])
 
     const moveCameraToLocation = (latLng: LatLng | null) => {
         if (!mapRef.current || !latLng) return;
@@ -39,10 +42,25 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
         })
     }
 
+    const moveToCurrentLocation = async () => {
+        if (!lastKnownLocation) {
+            moveCameraToLocation(initialLocation)
+        } else {
+            moveCameraToLocation(lastKnownLocation)
+        }
+
+        const location = await getLocation();
+
+        if (!location) return;
+
+        moveCameraToLocation(location)
+    }
+
 
     return (
         <View {...rest}>
             <MapView
+                onTouchStart={() => setIsFollowingUser(false)}
                 ref={mapRef}
                 showsUserLocation={showUserLocation}
                 style={styles.map}
@@ -56,8 +74,16 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
             />
 
             <FAB
-                iconName='car-outline'
-                onPress={() => { }}
+                iconName={isFollowingUser ? 'walk-outline' : 'accessibility-outline'}
+                onPress={() => setIsFollowingUser(!isFollowingUser)}
+                style={{
+                    bottom: 80,
+                    right: 20
+                }}
+            />
+            <FAB
+                iconName='compass-outline'
+                onPress={() => moveToCurrentLocation()}
                 style={{
                     bottom: 20,
                     right: 20

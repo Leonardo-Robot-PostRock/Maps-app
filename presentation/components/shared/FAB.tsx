@@ -14,7 +14,7 @@ const FAB = ({ iconName, onPress, style }: Props) => {
                 style={[styles.btn, style]}
                 onPress={onPress}
             >
-                <Ionicons name={iconName} size={40} color='white' />
+                <Ionicons name={iconName} size={35} color='white' />
             </TouchableOpacity>
         </View>
     )
