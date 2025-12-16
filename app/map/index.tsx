@@ -1,14 +1,29 @@
 import CustomMap from '@/presentation/components/maps/CustomMap';
-import { View } from 'react-native';
+import { useLocationStore } from '@/presentation/store/useLocationStore';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 const MapScreen = () => {
+  const { lastKnownLocation, getLocation } = useLocationStore();
+
+  useEffect(() => {
+    if (lastKnownLocation === null) {
+      getLocation();
+    }
+  }, [])
+
+  if (lastKnownLocation === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    )
+  }
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <CustomMap
-        initialLocation={{
-          latitude: -33.038644,
-          longitude: -68.879985
-        }}
+        initialLocation={lastKnownLocation}
         style={{ height: '100%', width: '100%' }}
       />
     </View>

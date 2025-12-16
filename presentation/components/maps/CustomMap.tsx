@@ -1,4 +1,6 @@
 import { LatLng } from '@/infrastructure/interfaces/lat-lng';
+import { useLocationStore } from '@/presentation/store/useLocationStore';
+import { useEffect } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
@@ -8,6 +10,18 @@ interface Props extends ViewProps {
 }
 
 const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props) => {
+
+    const { watchLocation, clearWatchLocation } = useLocationStore()
+
+    useEffect(() => {
+        watchLocation();
+
+        return () => {
+            clearWatchLocation()
+        }
+    }, [])
+
+
     return (
         <View {...rest}>
             <MapView
