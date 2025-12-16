@@ -1,50 +1,194 @@
-# Welcome to your Expo app 👋
+# Maps App 🗺️
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicación mobile creada con **Expo + React Native**, que utiliza **Google Maps** en Android e iOS.
+La configuración de claves se maneja mediante **variables de entorno** y `app.config.js`.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Requisitos previos
 
-   ```bash
-   npm install
-   ```
+Antes de correr el proyecto, necesitás tener instalado:
 
-2. Start the app
+* Node.js (recomendado LTS)
+* npm o yarn
+* Expo CLI
+* Android Studio (para Android) y/o Xcode (para iOS)
+* Una cuenta en **Google Cloud** con APIs de Maps habilitadas
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 📦 Instalación
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Clonar el repositorio
 
 ```bash
-npm run reset-project
+git clone <url-del-repo>
+cd maps-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Instalar dependencias
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🔐 Variables de entorno (OBLIGATORIO)
 
-## Join the community
+Este proyecto **NO incluye las API Keys en el repositorio**.
 
-Join our community of developers creating universal apps.
+Debés crear un archivo `.env` en la raíz del proyecto:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```env
+GOOGLE_MAPS_API_KEY_IOS=TU_API_KEY_IOS
+GOOGLE_MAPS_API_KEY_ANDROID=TU_API_KEY_ANDROID
+```
+
+### 🔎 Importante
+
+* Las keys deben estar **restringidas**:
+
+  * iOS → Bundle Identifier
+  * Android → Package Name + SHA-1
+* El archivo `.env` **no se sube al repositorio**
+
+---
+
+## ⚙️ Configuración del proyecto
+
+La configuración de Expo se maneja desde:
+
+```text
+app.config.js
+```
+
+Expo lee automáticamente las variables de entorno desde `.env`.
+
+* ❌ No es necesario instalar `dotenv`
+* ❌ No se utiliza `app.json`
+
+---
+
+## ▶️ Ejecutar el proyecto
+
+> ⚠️ **Este proyecto NO usa Expo Go**
+> Es necesario correrlo como build nativo.
+
+### Android
+
+```bash
+npx expo prebuild --clean
+npx expo run:android
+```
+
+### iOS (macOS)
+
+```bash
+npx expo prebuild --clean
+npx expo run:ios
+```
+
+---
+
+## ♻️ Cache y rebuild
+
+Si modificás:
+
+* `app.config.js`
+* variables de entorno
+* API Keys
+
+👉 **Siempre necesitás un rebuild nativo**:
+
+```bash
+npx expo prebuild --clean
+```
+
+## 🧭 Estructura del proyecto
+
+```text
+.expo/
+.vscode/
+android/
+app/
+├─ loading/
+├─ map/
+├─ map-simple/
+├─ permissions/
+├─ _layout.tsx
+├─ index.tsx
+assets/
+constants/
+core/
+├─ actions/
+├─ location/
+├─ permissions/
+infrastructure/
+├─ interfaces/
+ios/
+node_modules/
+presentation/
+├─ components/
+├─ hooks/
+├─ providers/
+├─ shared/
+store/
+scripts/
+.env
+.gitignore
+app.config.js
+eslint.config.js
+expo-env.d.ts
+package.json
+package-lock.json
+README.md
+tsconfig.json
+```
+
+---
+
+## 🏗️ Arquitectura del proyecto
+
+El proyecto sigue una **separación por capas**, inspirada en principios de *Clean Architecture*, adaptada a frontend con React Native y Expo.
+
+### Capas
+
+* **app/**
+  Routing y pantallas usando **Expo Router**.
+
+* **presentation/**
+  Componentes UI, hooks, providers y lógica de presentación.
+
+* **core/**
+  Lógica de dominio y casos de uso (ej: ubicación, permisos).
+
+* **infrastructure/**
+  Interfaces
+
+* **store/**
+  Manejo de estado global de la aplicación.
+
+---
+
+## 🧠 Notas importantes
+
+* Las Google Maps API Keys **no están en el código**
+* El proyecto utiliza **expo-router**
+* Compatible con **EAS Build**
+* Configuración lista para producción
+
+---
+
+## 📚 Recursos
+
+* [Expo Documentation](https://docs.expo.dev)
+* [Expo Router](https://docs.expo.dev/router/introduction/)
+* [Google Maps Platform](https://developers.google.com/maps)
+
+---
+
+## 👥 Comunidad
+
+* [Expo en GitHub](https://github.com/expo/expo)
+* [Expo Discord](https://chat.expo.dev)
