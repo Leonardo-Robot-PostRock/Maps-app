@@ -3,6 +3,7 @@ import { useLocationStore } from '@/presentation/store/useLocationStore';
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import FAB from '../shared/FAB';
 
 interface Props extends ViewProps {
     showUserLocation?: boolean;
@@ -51,6 +52,15 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
                     longitude: initialLocation.longitude,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
+                }}
+            />
+
+            <FAB
+                iconName='car-outline'
+                onPress={() => { }}
+                style={{
+                    bottom: 20,
+                    right: 20
                 }}
             />
         </View>
