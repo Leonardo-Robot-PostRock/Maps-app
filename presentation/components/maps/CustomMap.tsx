@@ -1,0 +1,35 @@
+import { LatLng } from '@/infrastructure/interfaces/lat-lng';
+import { StyleSheet, View, ViewProps } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+
+interface Props extends ViewProps {
+    showUserLocation?: boolean;
+    initialLocation: LatLng;
+}
+
+const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props) => {
+    return (
+        <View {...rest}>
+            <MapView
+                showsUserLocation={showUserLocation}
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                initialRegion={{
+                    latitude: initialLocation.latitude,
+                    longitude: initialLocation.longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }}
+            />
+        </View>
+    )
+}
+
+export default CustomMap
+
+const styles = StyleSheet.create({
+    map: {
+        width: '100%',
+        height: '100%'
+    }
+})
