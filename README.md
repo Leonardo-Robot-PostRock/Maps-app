@@ -132,7 +132,6 @@ presentation/
 ├─ components/
 ├─ hooks/
 ├─ providers/
-├─ shared/
 store/
 scripts/
 .env
