@@ -1,9 +1,12 @@
-import { LatLng } from '@/infrastructure/interfaces/lat-lng';
-import { useLocationStore } from '@/presentation/store/useLocationStore';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+
+import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+
+import { LatLng } from '@/infrastructure/interfaces/lat-lng';
+import { useLocationStore } from '@/presentation/store/useLocationStore';
 import FAB from '../shared/FAB';
+
 
 interface Props extends ViewProps {
     showUserLocation?: boolean;
@@ -14,8 +17,9 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
 
     const mapRef = useRef<MapView>(null);
     const [isFollowingUser, setIsFollowingUser] = useState(true);
+    const [isShowingPolyline, setIsShowingPolyline] = useState(false)
 
-    const { watchLocation, clearWatchLocation, lastKnownLocation, getLocation } = useLocationStore()
+    const { watchLocation, clearWatchLocation, lastKnownLocation, getLocation, userLocationList } = useLocationStore()
 
     useEffect(() => {
         watchLocation();
@@ -71,13 +75,28 @@ const CustomMap = ({ initialLocation, showUserLocation = true, ...rest }: Props)
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
-            />
-
+            >
+                {isShowingPolyline &&
+                    <Polyline
+                        coordinates={userLocationList}
+                        strokeColor='blue'
+                        strokeWidth={5}
+                    />
+                }
+            </MapView>
             <FAB
                 iconName={isFollowingUser ? 'walk-outline' : 'accessibility-outline'}
                 onPress={() => setIsFollowingUser(!isFollowingUser)}
                 style={{
                     bottom: 80,
+                    right: 20
+                }}
+            />
+            <FAB
+                iconName={isShowingPolyline ? 'eye-outline' : 'eye-off-outline'}
+                onPress={() => setIsShowingPolyline(!isShowingPolyline)}
+                style={{
+                    bottom: 140,
                     right: 20
                 }}
             />
